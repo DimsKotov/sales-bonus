@@ -62,6 +62,8 @@ function analyzeSalesData(data, options) {
     throw new Error("Параметр options должен содержать необходимые свойства.");
   }
 
+  const { calculateRevenue, calculateBonus } = options;
+
   const sellerStats = data.sellers.map((seller) => ({
     id: seller.id,
     name: `${seller.first_name} ${seller.last_name}`,
