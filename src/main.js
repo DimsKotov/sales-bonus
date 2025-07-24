@@ -21,13 +21,13 @@ function calculateSimpleRevenue(purchase, _product) {
 function calculateBonusByProfit(index, total, seller) {
   const { profit } = seller;
   if (index === 0) {
-    return seller * 0.15;
+    return profit * 0.15;
   } else if (index <= 2 && index > 0) {
-    return seller * 0.1;
+    return profit * 0.1;
   } else if (index === total - 1) {
     return 0;
   } else {
-    return seller * 0.05;
+    return profit * 0.05;
   }
 }
 
@@ -41,14 +41,26 @@ function calculateBonusByProfit(index, total, seller) {
 function analyzeSalesData(data, options) {
   // @TODO: Проверка входных данных
 
-  if (!data || !Array.isArray(data.sellers) || data.sellers.length === 0) {
-    throw new Error("Некорректные входные данные");
+  if (
+    !data ||
+    !Array.isArray(data.sellers) ||
+    data.sellers.length === 0 ||
+    !Array.isArray(data.purchase_records) ||
+    data.purchase_records.length === 0
+  ) {
+    throw new Error("Некорректные входные данные или отсутствуют записи о покупках.");
   }
   // @TODO: Проверка наличия опций
 
-  if (typeof options !== "object" || options === null) {
-    throw new Error("Параметр options должен быть объектом.");
+  if (
+    typeof options !== "object" ||
+    options === null ||
+    !(Object.keys(options).length >= 1)
+  ) {
+    throw new Error("Параметр options должен содержать необходимые свойства.");
   }
+
+  
 
   const sellerStats = data.sellers.map((seller) => ({
     id: seller.id,
@@ -115,11 +127,7 @@ function analyzeSalesData(data, options) {
   sellerStats.sort((a, b) => b.profit - a.profit);
 
   sellerStats.forEach((seller, index) => {
-    seller.bonus = calculateBonusByProfit(
-      index,
-      sellerStats.length,
-      seller.profit
-    ); // Считаем бонус
+    seller.bonus = calculateBonusByProfit(index, sellerStats.length, seller); // Считаем бонус
     seller.top_products = Object.entries(seller.products_sold)
       .map(([sku, quantity]) => ({ sku, quantity }))
       .sort((a, b) => b.quantity - a.quantity)
