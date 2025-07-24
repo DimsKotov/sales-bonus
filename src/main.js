@@ -54,15 +54,20 @@ function analyzeSalesData(data, options) {
   }
   // @TODO: Проверка наличия опций
 
-  if (
-    typeof options !== "object" ||
-    options === null ||
-    Object.keys(options).length < 1
-  ) {
-    throw new Error("Параметр options должен содержать необходимые свойства.");
+  if (typeof options !== "object" || options === null) {
+    throw new TypeError("Параметр `options` должен быть объектом");
   }
 
   const { calculateRevenue, calculateBonus } = options;
+
+  if (
+    typeof calculateRevenue !== "function" ||
+    typeof calculateBonus !== "function"
+  ) {
+    throw new TypeError(
+      "`calculateRevenue` и `calculateBonus` должны быть функциями"
+    );
+  }
 
   const sellerStats = data.sellers.map((seller) => ({
     id: seller.id,
