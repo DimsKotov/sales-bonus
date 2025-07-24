@@ -48,19 +48,19 @@ function analyzeSalesData(data, options) {
     !Array.isArray(data.purchase_records) ||
     data.purchase_records.length === 0
   ) {
-    throw new Error("Некорректные входные данные или отсутствуют записи о покупках.");
+    throw new Error(
+      "Некорректные входные данные или отсутствуют записи о покупках."
+    );
   }
   // @TODO: Проверка наличия опций
 
   if (
     typeof options !== "object" ||
     options === null ||
-    !(Object.keys(options).length >= 1)
+    Object.keys(options).length < 1
   ) {
     throw new Error("Параметр options должен содержать необходимые свойства.");
   }
-
-  
 
   const sellerStats = data.sellers.map((seller) => ({
     id: seller.id,
